@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}书城 - 用户中心{% endblock %}
+
+{% block head %}
+    <style>
+        /* Bootstrap的表格默认是竖直方向上面对齐的 */
+        .table tbody tr td {
+            vertical-align: middle;
+        }
+    </style>
+{% endblock %}
+
+
+{% block body %}
+    <div class="card mt-3 mb-3">
+        <div class="card-header">用户信息</div>
+        <div class="card-body">
+            <p class="card-title">用户名：{{ request.user.username }}</p>
+            <p class="card-title">
+                <a href="{% url 'cart' %}">购物车</a>：
+                <span class="h2 text-warning">{{ profile.cart.count }}</span> 件商品
+            </p>
+            <p class="card-title">
+                已购买：<span class="h2 text-warning">{{ profile.purchased.count }}</span> 件商品
+            </p>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header">已购买</div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">商品名称</th>
+                <th scope="col">商品价格</th>
+                <th scope="col">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in profile.purchased.all %}
+                <tr>
+                    <td>
+                        <div class="row align-items-center">
+                            <div class="col-2">
+                                <img src="{{ item.image }}" alt="" height="120" width="100">
+                            </div>
+                            <div class="col-10">
+                                <div>{{ item.title }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ item.price }}</td>
+                    <td>
+                        <a href="{% url 'details' item.pk %}" class="btn btn-outline-secondary">查看</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td>空</td>
+                    <td>空</td>
+                    <td>空</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

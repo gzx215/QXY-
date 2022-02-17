@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}书城 - 购物车{% endblock %}
+
+{% block head %}
+    <style>
+        /* Bootstrap的表格默认是竖直方向上面对齐的 */
+        .table tbody tr td {
+            vertical-align: middle;
+        }
+    </style>
+    <script src="/static/js/js.cookie.js"></script>
+    <script src="/static/js/cart.js"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="mt-4 mb-5">
+        全部商品 <span class="h4 text-warning">{{ total }}</span> 件
+    </div>
+
+    <table class="table mt-3">
+        <thead>
+        <tr>
+            <th scope="col">商品名称</th>
+            <th scope="col">商品价格</th>
+            <th scope="col">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in cart %}
+            <tr id="tr_{{ item.Id }}">
+                <td>
+                    <div class="row align-items-center">
+                        <div class="col-2">
+                            <img src="{{ item.image }}" alt="" height="160" width="100">
+                        </div>
+                        <div class="col-10">
+                            <div>{{ item.title }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>{{ item.price }}</td>
+                <td>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="item" value="{{ item.pk }}">
+                        <button id="delete_{{ item.Id }}" onclick="remove_cart({{ item.Id }})" type="button" class="btn btn-outline-secondary">
+                            删除
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td>空</td>
+                <td>空</td>
+                <td>空</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="row mb-2 align-items-center">
+        <div class="col-10 text-right">
+            合计（含运费）：
+        </div>
+        <div class="col-2 text-center">
+            <span class="text-danger h2">￥{{ price }}</span>
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-10"></div>
+        <div class="col-2">
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="pay">
+                <button type="submit" class="btn btn-lg btn-block btn-danger">支付</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
